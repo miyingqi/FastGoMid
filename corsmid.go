@@ -32,7 +32,7 @@ func NewCors() *CorsConfig {
 	}
 }
 
-func (c *CorsConfig) HandleHTTP(ctx fastgo.ContextInterface) {
+func (c *CorsConfig) HandleHTTP(ctx *fastgo.Context) {
 	origin := ctx.GetHeader("Origin")
 
 	if origin == "" {
@@ -63,7 +63,7 @@ func (c *CorsConfig) HandleHTTP(ctx fastgo.ContextInterface) {
 	ctx.Next()
 }
 
-func (c *CorsConfig) handlePreflight(ctx fastgo.ContextInterface) {
+func (c *CorsConfig) handlePreflight(ctx *fastgo.Context) {
 	ctx.Abort()
 	origin := ctx.GetHeader("Origin")
 	requestMethod := ctx.GetHeader("Access-Control-Request-Method")
@@ -114,11 +114,14 @@ func (c *CorsConfig) handlePreflight(ctx fastgo.ContextInterface) {
 	}
 
 	ctx.SetStatus(204)
-	ctx.Write([]byte{})
+	_, err := ctx.Write([]byte{})
+	if err != nil {
+		return
+	}
 	return
 }
 
-func (c *CorsConfig) handleRequest(ctx fastgo.ContextInterface) {
+func (c *CorsConfig) handleRequest(ctx *fastgo.Context) {
 	origin := ctx.GetHeader("Origin")
 
 	ctx.SetHeader("Access-Control-Allow-Origin", origin)
@@ -130,7 +133,7 @@ func (c *CorsConfig) handleRequest(ctx fastgo.ContextInterface) {
 	c.setExposeHeaders(ctx)
 }
 
-func (c *CorsConfig) setExposeHeaders(ctx fastgo.ContextInterface) {
+func (c *CorsConfig) setExposeHeaders(ctx *fastgo.Context) {
 	if len(c.exposeHeaders) > 0 {
 		ctx.SetHeader("Access-Control-Expose-Headers", strings.Join(c.exposeHeaders, ", "))
 	}
