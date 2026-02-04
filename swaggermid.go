@@ -14,7 +14,7 @@ func NewSwaggerMid() *SwaggerMid {
 	return &SwaggerMid{}
 }
 
-func (s *SwaggerMid) HandleHTTP(ctx *fastgo.Context) {
+func (s *SwaggerMid) Handle(ctx *fastgo.Context) {
 	if ctx.Path() == "/swagger/doc.json" {
 		// 返回生成的 swagger.json
 		ctx.SetHeader("Content-Type", "application/json")

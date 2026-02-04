@@ -32,7 +32,7 @@ func NewCors() *CorsConfig {
 	}
 }
 
-func (c *CorsConfig) HandleHTTP(ctx *fastgo.Context) {
+func (c *CorsConfig) Handle(ctx *fastgo.Context) {
 	origin := ctx.GetHeader("Origin")
 
 	if origin == "" {
